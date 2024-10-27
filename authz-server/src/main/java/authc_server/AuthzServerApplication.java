@@ -1,13 +1,13 @@
-package authn_server;
+package authc_server;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class AuthnServerApplication {
+public class AuthzServerApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(AuthnServerApplication.class, args);
+		SpringApplication.run(AuthzServerApplication.class, args);
 	}
 
 }
