@@ -1,38 +1,42 @@
 package authn_server.controller;
 
 import authn_server.entity.Client;
-import authn_server.service.Clientservice;
+import authn_server.service.ClientService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/client")
 public class ClientController {
 
+    @Autowired
+    private ClientService clientService;
 
-    private Clientservice clientService;
-    private PasswordEncoder passwordEncoder;
 
     @PostMapping("/add")
-    public ResponseEntity<Client> addClient(@RequestBody Client client){
-        String encodedPassword = passwordEncoder.encode(client.getPassword());
-        Client client1=new Client();
-        client1.setUsername(client.getUsername());
-        client1.setPassword(encodedPassword);
-       return ResponseEntity.status(HttpStatus.CREATED).body(client1);
+    public String addClient(@RequestBody Client client) throws Exception{
+        Client client1=this.clientService.findByUsername(client.getUsername());
+        if(client1==null){
+            throw new Exception();
+        }
+        return clientService.add(client);
     }
 
+
+
     @GetMapping("/allClients")
-    public ResponseEntity<List<Client>> getAllClients(){
-        List<Client>list=this.clientService.getClientList();
+    public ResponseEntity<List<Client>> getAllClients() {
+        List<Client> list = this.clientService.getClientList();
         return ResponseEntity.status(HttpStatus.CREATED).body(list);
     }
+
+    @GetMapping("/{username}")
+    public Client getClient(@PathVariable("username") String username) {
+        return clientService.findByUsername(username);
+    }
+
 }
