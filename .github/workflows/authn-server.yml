@@ -1,0 +1,30 @@
+name: AuthN Server
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - authn-server/**
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: 17
+      - name: Package
+        run: |
+          cd authn-server
+          mvn -B compile --file pom.xml
+          mvn -B test-compile --file pom.xml
+      - name: JUnits
+        run: |
+          cd authn-server
+          mvn -B test --file pom.xml

@@ -1,7 +1,8 @@
-package authn_server.controller;
+package authn_server.controller.client;
 
 import authn_server.entity.Client;
 import authn_server.service.ClientService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +19,8 @@ public class ClientController {
 
 
     @PostMapping("/add")
-    public ResponseEntity<String> addClient(@RequestBody Client client) throws Exception {
-        Client client1 = this.clientService.findByUsername(client.getUsername());
-        return ResponseEntity.status(HttpStatus.CREATED).body(clientService.add(client));
+    public ResponseEntity<ClientResponse> addClient(@Valid @RequestBody ClientRequest clientRequest) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(clientService.add(clientRequest));
     }
 
     @GetMapping("/allClients")

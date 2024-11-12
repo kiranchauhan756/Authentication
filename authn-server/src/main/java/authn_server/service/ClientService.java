@@ -1,6 +1,9 @@
 package authn_server.service;
 
 
+import authn_server.controller.client.ClientRequest;
+import authn_server.controller.client.ClientResponse;
+import authn_server.converter.Converter;
 import authn_server.entity.Client;
 import authn_server.exception.ClientAlreadyExistException;
 import authn_server.exception.NoSuchClientExistException;
@@ -16,20 +19,23 @@ public class ClientService {
 
     private final ClientRepository clientRepository;
     private final PasswordEncoder bCryptPasswordEncoder;
+    private final Converter converter;
 
-    public ClientService(ClientRepository clientRepository, PasswordEncoder bCryptPasswordEncoder) {
+    public ClientService(ClientRepository clientRepository, PasswordEncoder bCryptPasswordEncoder, Converter converter) {
         this.clientRepository = clientRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.converter = converter;
     }
 
 
-    public String add(Client client) {
+    public ClientResponse add(ClientRequest clientRequest) {
+        Client client = (Client) converter.convert(clientRequest, new Client());
         Client client1 = this.clientRepository.findByUsername(client.getUsername());
 
         if (client1 == null) {
             client.setPassword(bCryptPasswordEncoder.encode(client.getPassword()));
-            clientRepository.save(client);
-            return "New Client added successfully";
+            Client savedClient = clientRepository.save(client);
+            return (ClientResponse) converter.convert(savedClient, new ClientResponse());
         } else
             throw new ClientAlreadyExistException("Client Already Exist!!");
     }
