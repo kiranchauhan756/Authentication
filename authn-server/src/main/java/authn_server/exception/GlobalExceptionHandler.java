@@ -11,10 +11,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ClientErrorResponse> handleException(Exception exc) {
-        ClientErrorResponse error = new ClientErrorResponse();
-        error.setStatusCode(HttpStatus.BAD_REQUEST.value());
-        error.setMessage("Client Already Exist or bad request");
-        return new ResponseEntity<ClientErrorResponse>(error, HttpStatus.BAD_REQUEST);
+
+        return new ResponseEntity<ClientErrorResponse>(ClientErrorResponse.builder().message(exc.getMessage()).build(), HttpStatus.BAD_REQUEST);
     }
 
 }

@@ -18,25 +18,24 @@ public class ClientController {
 
 
     @PostMapping("/add")
-    public String addClient(@RequestBody Client client) throws Exception{
-        Client client1=this.clientService.findByUsername(client.getUsername());
-        if(client1==null){
-            throw new Exception();
-        }
-        return clientService.add(client);
+    public ResponseEntity<String> addClient(@RequestBody Client client) throws Exception {
+        Client client1 = this.clientService.findByUsername(client.getUsername());
+        return ResponseEntity.status(HttpStatus.CREATED).body(clientService.add(client));
     }
-
-
 
     @GetMapping("/allClients")
     public ResponseEntity<List<Client>> getAllClients() {
         List<Client> list = this.clientService.getClientList();
-        return ResponseEntity.status(HttpStatus.CREATED).body(list);
+        return ResponseEntity.status(HttpStatus.OK).body(list);
     }
 
     @GetMapping("/{username}")
-    public Client getClient(@PathVariable("username") String username) {
-        return clientService.findByUsername(username);
+    public ResponseEntity<Client> getClient(@PathVariable("username") String username) {
+        return ResponseEntity.status(HttpStatus.OK).body(clientService.findByUsername(username));
     }
 
+    @PutMapping("/update/{username}")
+    public ResponseEntity<String> updateClient(@PathVariable("username") String username, @RequestBody Client client) {
+        return ResponseEntity.status(HttpStatus.OK).body(clientService.updateClient(username, client));
+    }
 }

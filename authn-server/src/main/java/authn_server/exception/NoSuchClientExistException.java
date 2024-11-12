@@ -9,6 +9,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @Setter
 @Getter
-public class ClientAlreadyExistException extends RuntimeException {
+public class NoSuchClientExistException  extends RuntimeException{
     private String message;
 }
