@@ -38,4 +38,9 @@ public class ClientController {
     public ResponseEntity<String> updateClient(@PathVariable("username") String username, @RequestBody Client client) {
         return ResponseEntity.status(HttpStatus.OK).body(clientService.updateClient(username, client));
     }
+
+    @DeleteMapping("/delete/{username}")
+    public ResponseEntity<String> deleteClient(@PathVariable("username") String username) {
+        return ResponseEntity.status(HttpStatus.OK).body(clientService.deleteClient(username));
+    }
 }

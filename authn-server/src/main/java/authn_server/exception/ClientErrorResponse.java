@@ -8,7 +8,7 @@ import lombok.*;
 @Setter
 @Builder
 public class ClientErrorResponse {
-    private int errorCode;
+    private String errorCode;
     private String message;
 
 }

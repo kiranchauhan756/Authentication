@@ -2,17 +2,20 @@ package authn_server.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@ControllerAdvice
-public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+@RestControllerAdvice
+public class GlobalExceptionHandler {
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ClientErrorResponse> handleException(Exception exc) {
+    @ExceptionHandler(ClientAlreadyExistException.class)
+    public ResponseEntity<ClientErrorResponse> handleClientAlreadyExistException(Exception exc) {
+        return new ResponseEntity<>(ClientErrorResponse.builder().message(exc.getMessage()).errorCode("AUTHN-001").build(), HttpStatus.BAD_REQUEST);
+    }
 
-        return new ResponseEntity<ClientErrorResponse>(ClientErrorResponse.builder().message(exc.getMessage()).build(), HttpStatus.BAD_REQUEST);
+    @ExceptionHandler(NoSuchClientExistException.class)
+    public ResponseEntity<ClientErrorResponse> handleNoSuchClientExistException(Exception exc) {
+        return new ResponseEntity<>(ClientErrorResponse.builder().message(exc.getMessage()).errorCode("AUTHN-002").build(), HttpStatus.NOT_FOUND);
     }
 
 }

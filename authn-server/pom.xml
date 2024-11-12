@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>authn-server</groupId>
-    <artifactId>authz-server</artifactId>
+    <artifactId>authn-server</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>authn-server</name>
     <description>Authentication Server in Spring Boot</description>
