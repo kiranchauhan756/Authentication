@@ -13,7 +13,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-
 import static authn_server.helpers.JsonHelper.asJsonString;
 import static authn_server.helpers.JsonHelper.asObject;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,11 +32,12 @@ public class ClientControllerTest {
     @MockBean
     private ClientService clientService;
 
-
+    //positive test case
+    //when the request is valid and client does not exist in the database
     @Test
     void testAddClient_whenRequestValidAndClientDoesNotExist() throws Exception {
-        ClientRequest clientRequest = ClientRequest.builder().username("kiran").password("password").build();
-        when(clientService.add(clientRequest)).thenReturn(ClientResponse.builder().id(1L).username("kiran").password("password").build());
+        ClientRequest clientRequest = ClientRequest.builder().username("kiran").password("pP@1yhnb").build();
+        when(clientService.add(clientRequest)).thenReturn(ClientResponse.builder().id(1L).username("kiran").password("pP@1yhnb").build());
         MvcResult mvcResult = mockMvc.perform(post(CLIENT_REQUEST_PATH + "/add").content(asJsonString(clientRequest))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -50,9 +50,11 @@ public class ClientControllerTest {
 
     }
 
+    //negative test case
+    //when the request is not valid either the pwd and username are empty or pwd doesn't validate the criteria or username is not a string
     @Test
     void testAddClient_whenRequestNotValid() throws Exception {
-        ClientRequest clientRequest = ClientRequest.builder().password("password").build();
+        ClientRequest clientRequest = ClientRequest.builder().password("pP@1yhnb").build();
         MvcResult mvcResult = mockMvc.perform(post(CLIENT_REQUEST_PATH + "/add").content(asJsonString(clientRequest))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -66,7 +68,7 @@ public class ClientControllerTest {
 
     @Test
     void testAddClient_whenRequestValidAndClientAlreadyExists() throws Exception {
-        ClientRequest clientRequest = ClientRequest.builder().username("kiran").password("password").build();
+        ClientRequest clientRequest = ClientRequest.builder().username("kiran").password("pP@1yhnb").build();
         when(clientService.add(clientRequest)).thenThrow(ClientAlreadyExistException.class);
         MvcResult mvcResult = mockMvc.perform(post(CLIENT_REQUEST_PATH + "/add").content(asJsonString(clientRequest))
                         .contentType(MediaType.APPLICATION_JSON)
