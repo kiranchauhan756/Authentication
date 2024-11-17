@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ClientService {
@@ -42,8 +43,14 @@ public class ClientService {
     }
 
 
-    public List<Client> getClientList() {
-        return clientRepository.findAll();
+    public List<ClientResponse> getClientList() {
+       Optional<List<Client>> clients=Optional.of(clientRepository.findAll());
+       if(!clients.get().isEmpty()){
+           return clients.get().stream().map(client-> (ClientResponse) converter.convert(client, new ClientResponse())).collect(Collectors.toList());
+
+       }
+       else
+           throw new NoSuchClientExistException("No Client is available currently");
     }
 
 

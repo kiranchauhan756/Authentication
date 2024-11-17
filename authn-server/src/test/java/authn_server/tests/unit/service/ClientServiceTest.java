@@ -15,6 +15,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -75,4 +77,29 @@ public class ClientServiceTest {
         when(clientRepository.findByUsername("kiran")).thenReturn(Optional.empty());
         assertThrows(NoSuchClientExistException.class, () -> clientService.findByUsername("kiran"));
     }
+
+    @Test
+    void test_getAllClientsWhenExists() {
+        Client client1 = Client.builder().username("kiran").password("pP@1yhnb").build();
+        Client client2 = Client.builder().username("kiranChauhan").password("pP@1yhnb23").build();
+        Client client3 = Client.builder().username("kiran Chauhan").password("pP@1yhnb12434").build();
+        ClientResponse clientResponse1 = ClientResponse.builder().id(1L).username("kiran").password("%$%^%^^%^^%^%$%$%$&").build();
+        ClientResponse clientResponse2 = ClientResponse.builder().id(1L).username("kiranChauhan").password("%$%^%^^%^^%^%$%$%$&").build();
+        ClientResponse clientResponse3 = ClientResponse.builder().id(1L).username("kiran Chauhan").password("%$%^%^^%^^%^%$%$%$&").build();
+        when(converter.convert(client1, new ClientResponse())).thenReturn(clientResponse1);
+        when(converter.convert(client2, new ClientResponse())).thenReturn(clientResponse2);
+        when(converter.convert(client3, new ClientResponse())).thenReturn(clientResponse3);
+        when(clientRepository.findAll()).thenReturn(List.of(client1, client2, client3));
+        List<ClientResponse> clientList = clientService.getClientList();
+        assertThat(clientList).isNotEmpty().hasSize(3);
+
+    }
+
+    @Test
+    void test_getAllClientsWhenNoClientExists() {
+        when(clientRepository.findAll()).thenReturn(Collections.emptyList());
+        assertThrows(NoSuchClientExistException.class, () -> clientService.getClientList());
+
+    }
+
 }

@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/client")
@@ -24,8 +25,8 @@ public class ClientController {
     }
 
     @GetMapping("/allClients")
-    public ResponseEntity<List<Client>> getAllClients() {
-        List<Client> list = this.clientService.getClientList();
+    public ResponseEntity<List<ClientResponse>> getAllClients() {
+        List<ClientResponse> list = this.clientService.getClientList();
         return ResponseEntity.status(HttpStatus.OK).body(list);
     }
 
