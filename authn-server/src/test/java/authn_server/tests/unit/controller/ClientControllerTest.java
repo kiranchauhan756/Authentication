@@ -115,5 +115,21 @@ public class ClientControllerTest {
         assertThat(errorResponse.getErrorCode()).isEqualTo("AUTHN-002");
     }
 
+    @Test
+    void testDelete_whenClientExist() throws Exception{
+
+    }
+    @Test
+    void testDelete_whenClientDoNotExist() throws Exception{
+
+    }
+    @Test
+    void testUpdate_whenClientExist() throws Exception{
+
+    }
+    @Test
+    void testUpdate_whenClientDoNotExist() throws Exception{
+
+    }
 
 }
