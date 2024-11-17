@@ -4,6 +4,7 @@ import authn_server.controller.client.ClientRequest;
 import authn_server.controller.client.ClientResponse;
 import authn_server.converter.Converter;
 import authn_server.entity.Client;
+import authn_server.exception.ClientAlreadyExistException;
 import authn_server.exception.NoSuchClientExistException;
 import authn_server.repository.ClientRepository;
 import authn_server.service.ClientService;
@@ -55,7 +56,10 @@ public class ClientServiceTest {
 
     @Test
     void test_addExistingClient() throws Exception {
-
+        ClientRequest clientRequest = ClientRequest.builder().username("kiran").password("pP@1yhnb").build();
+        Client client = Client.builder().id(1L).username("kiran").password("pP@1yhnb").build();
+        when(clientRepository.findByUsername(clientRequest.getUsername())).thenReturn(Optional.ofNullable(client));
+        assertThrows(ClientAlreadyExistException.class, () -> clientService.add(clientRequest));
     }
 
     @Test
