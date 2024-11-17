@@ -30,10 +30,10 @@ public class ClientService {
 
 
     public ClientResponse add(ClientRequest clientRequest) {
-        Client client = (Client) converter.convert(clientRequest, new Client());
-        Optional<Client> client1 = this.clientRepository.findByUsername(client.getUsername());
+        Optional<Client> client1 = this.clientRepository.findByUsername(clientRequest.getUsername());
 
         if (client1.isEmpty()) {
+            Client client = (Client) converter.convert(clientRequest, new Client());
             client.setPassword(bCryptPasswordEncoder.encode(client.getPassword()));
             Client savedClient = clientRepository.save(client);
             return (ClientResponse) converter.convert(savedClient, new ClientResponse());
