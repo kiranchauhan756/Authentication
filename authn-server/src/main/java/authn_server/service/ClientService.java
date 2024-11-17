@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ClientService {
@@ -30,9 +31,9 @@ public class ClientService {
 
     public ClientResponse add(ClientRequest clientRequest) {
         Client client = (Client) converter.convert(clientRequest, new Client());
-        Client client1 = this.clientRepository.findByUsername(client.getUsername());
+        Optional<Client> client1 = this.clientRepository.findByUsername(client.getUsername());
 
-        if (client1 == null) {
+        if (client1.isEmpty()) {
             client.setPassword(bCryptPasswordEncoder.encode(client.getPassword()));
             Client savedClient = clientRepository.save(client);
             return (ClientResponse) converter.convert(savedClient, new ClientResponse());
@@ -47,12 +48,18 @@ public class ClientService {
 
 
     public Client findByUsername(String username) {
-        return clientRepository.findByUsername(username);
+        Optional<Client> clientOptional = clientRepository.findByUsername(username);
+        if(clientOptional.isPresent()) {
+          return clientOptional.get();
+        } else {
+            throw new NoSuchClientExistException("Client with this username does not exist!!");
+        }
     }
 
     public String updateClient(String username, Client client) {
-        Client client1 = clientRepository.findByUsername(username);
-        if (client1 != null) {
+        Optional<Client> optionalClient = clientRepository.findByUsername(username);
+        if (optionalClient.isPresent()) {
+            Client client1=optionalClient.get();
             client1.setUsername(client.getUsername());
             client1.setPassword(client.getPassword());
             clientRepository.save(client1);
@@ -62,9 +69,10 @@ public class ClientService {
     }
 
     public String deleteClient(String username) {
-        Client client1 = clientRepository.findByUsername((username));
-        if (client1 != null) {
-            clientRepository.delete(client1);
+        Optional<Client> optionalClient = clientRepository.findByUsername((username));
+        if (optionalClient.isPresent()) {
+            Client client=optionalClient.get();
+            clientRepository.delete(client);
             return "Client Record deleted  successfully!!";
         } else
             throw new NoSuchClientExistException("Client with this username does not exist!!");
