@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.Collections;
 import java.util.List;
@@ -23,7 +24,7 @@ import static authn_server.helpers.JsonHelper.asJsonString;
 import static authn_server.helpers.JsonHelper.asObject;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -112,22 +113,73 @@ public class ClientControllerTest {
         ErrorResponse errorResponse = asObject(response, ErrorResponse.class);
         assertThat(errorResponse.getErrorCode()).isEqualTo("AUTHN-002");
     }
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     @Test
     void testDelete_whenClientExist() throws Exception{
-
+        when(clientService.deleteClient("kiran")).thenReturn(ClientResponse.builder().id(1L).username("kiran").password("pP@1yhnb").build());
+        MvcResult mvcResult = mockMvc.perform(delete(CLIENT_REQUEST_PATH + "/delete"+"/kiran")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").exists()).andReturn();
+        String response = mvcResult.getResponse().getContentAsString();
+        ClientResponse clientResponse = asObject(response, ClientResponse.class);
+        assertThat(clientResponse.getId()).isEqualTo(1L);
+        assertThat(clientResponse.getUsername()).isEqualTo("kiran");
     }
+
     @Test
     void testDelete_whenClientDoNotExist() throws Exception{
-
+        when(clientService.deleteClient("kiran")).thenThrow(NoSuchClientExistException.class);
+        MvcResult mvcResult = mockMvc.perform(delete(CLIENT_REQUEST_PATH + "/delete"+"/kiran")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.errorCode").exists()).andReturn();
+        String response = mvcResult.getResponse().getContentAsString();
+        ErrorResponse errorResponse = asObject(response, ErrorResponse.class);
+        assertThat(errorResponse.getErrorCode()).isEqualTo("AUTHN-002");
     }
     @Test
-    void testUpdate_whenClientExist() throws Exception{
+    void testUpdate_whenClientExistAndRequestIsValid() throws Exception{
+        ClientRequest clientRequest = ClientRequest.builder().username("kiranChauhan").password("pP@1yhnb11").build();
+        when(clientService.updateClient("kiran",clientRequest)).thenReturn(ClientResponse.builder().id(1L).username("kiranChauhan").password("pP@1yhnb11").build());
+        MvcResult mvcResult = mockMvc.perform(put(CLIENT_REQUEST_PATH + "/update"+"/kiran").content(asJsonString(clientRequest))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").exists()).andReturn();
+        String response = mvcResult.getResponse().getContentAsString();
+        ClientResponse clientResponse = asObject(response, ClientResponse.class);
+        assertThat(clientResponse.getId()).isEqualTo(1L);
+        assertThat(clientResponse.getUsername()).isEqualTo("kiranChauhan");
+    }
+    //Error -----------------------------------------------
+    @Test
+    void testUpdate_whenClientExistAndRequestIsNotValid() throws Exception{
+        ClientRequest clientRequest = ClientRequest.builder().password("pP@1yhnb").build();
+        MvcResult mvcResult = mockMvc.perform(put(CLIENT_REQUEST_PATH + "/update"+"/kiran").content(asJsonString(clientRequest))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorCode").exists()).andReturn();
+        String response = mvcResult.getResponse().getContentAsString();
+        ErrorResponse errorResponse = asObject(response, ErrorResponse.class);
+        assertThat(errorResponse.getErrorCode()).isEqualTo("AUTHN-003");
 
     }
     @Test
     void testUpdate_whenClientDoNotExist() throws Exception{
-
+        ClientRequest clientRequest = ClientRequest.builder().username("kiran").password("pPyhnb1@").build();
+        when(clientService.updateClient("kiran",clientRequest)).thenThrow(NoSuchClientExistException.class);
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.put(CLIENT_REQUEST_PATH + "/update"+"/kiran").content(asJsonString(clientRequest))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.errorCode").exists()).andReturn();
+        String response = mvcResult.getResponse().getContentAsString();
+        ErrorResponse errorResponse = asObject(response, ErrorResponse.class);
+        assertThat(errorResponse.getErrorCode()).isEqualTo("AUTHN-002");
     }
 
 }
