@@ -115,11 +115,16 @@ public class ClientServiceTest {
 
     @Test
     void test_deleteExistingClient() {
+        Client client = Client.builder().username("kiran").password("1234").build();
+        when(clientRepository.findByUsername("kiran")).thenReturn(Optional.ofNullable(client));
+        ClientResponse response = clientService.deleteClient("kiran");
+        assertThat(response).isNull();
 
     }
 
     @Test
     void test_deleteNonExistingClient() throws Exception {
-
+        when(clientRepository.findByUsername("kiran")).thenReturn(Optional.empty());
+        assertThrows(NoSuchClientExistException.class, () -> clientService.deleteClient("kiran"));
     }
 }

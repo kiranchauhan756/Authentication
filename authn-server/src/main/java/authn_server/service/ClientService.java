@@ -74,12 +74,12 @@ public class ClientService {
             throw new NoSuchClientExistException("Client with this username does not exist!!");
     }
 
-    public String deleteClient(String username) {
+    public ClientResponse deleteClient(String username) {
         Optional<Client> optionalClient = clientRepository.findByUsername((username));
         if (optionalClient.isPresent()) {
             Client client = optionalClient.get();
             clientRepository.delete(client);
-            return "Client Record deleted  successfully!!";
+            return (ClientResponse) converter.convert(client, new ClientResponse());
         } else
             throw new NoSuchClientExistException("Client with this username does not exist!!");
     }

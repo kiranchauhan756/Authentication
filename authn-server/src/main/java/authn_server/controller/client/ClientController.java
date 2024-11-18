@@ -41,7 +41,7 @@ public class ClientController {
     }
 
     @DeleteMapping("/delete/{username}")
-    public ResponseEntity<String> deleteClient(@PathVariable("username") String username) {
+    public ResponseEntity<ClientResponse> deleteClient(@PathVariable("username") String username) {
         return ResponseEntity.status(HttpStatus.OK).body(clientService.deleteClient(username));
     }
 }
