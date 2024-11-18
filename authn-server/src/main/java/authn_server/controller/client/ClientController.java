@@ -36,8 +36,8 @@ public class ClientController {
     }
 
     @PutMapping("/update/{username}")
-    public ResponseEntity<String> updateClient(@PathVariable("username") String username, @RequestBody Client client) {
-        return ResponseEntity.status(HttpStatus.OK).body(clientService.updateClient(username, client));
+    public ResponseEntity<ClientResponse> updateClient(@PathVariable("username") String username, @RequestBody ClientRequest clientRequest) {
+        return ResponseEntity.status(HttpStatus.OK).body(clientService.updateClient(username, clientRequest));
     }
 
     @DeleteMapping("/delete/{username}")

@@ -44,33 +44,32 @@ public class ClientService {
 
 
     public List<ClientResponse> getClientList() {
-       Optional<List<Client>> clients=Optional.of(clientRepository.findAll());
-       if(!clients.get().isEmpty()){
-           return clients.get().stream().map(client-> (ClientResponse) converter.convert(client, new ClientResponse())).collect(Collectors.toList());
+        Optional<List<Client>> clients = Optional.of(clientRepository.findAll());
+        if (!clients.get().isEmpty()) {
+            return clients.get().stream().map(client -> (ClientResponse) converter.convert(client, new ClientResponse())).collect(Collectors.toList());
 
-       }
-       else
-           throw new NoSuchClientExistException("No Client is available currently");
+        } else
+            throw new NoSuchClientExistException("No Client is available currently");
     }
 
 
     public Client findByUsername(String username) {
         Optional<Client> clientOptional = clientRepository.findByUsername(username);
-        if(clientOptional.isPresent()) {
-          return clientOptional.get();
+        if (clientOptional.isPresent()) {
+            return clientOptional.get();
         } else {
             throw new NoSuchClientExistException("Client with this username does not exist!!");
         }
     }
 
-    public String updateClient(String username, Client client) {
+    public ClientResponse updateClient(String username, ClientRequest clientRequest) {
         Optional<Client> optionalClient = clientRepository.findByUsername(username);
         if (optionalClient.isPresent()) {
-            Client client1=optionalClient.get();
-            client1.setUsername(client.getUsername());
-            client1.setPassword(client.getPassword());
-            clientRepository.save(client1);
-            return "Client details updated successfully!!";
+            Client client1 = optionalClient.get();
+            client1.setUsername(clientRequest.getUsername());
+            client1.setPassword(clientRequest.getPassword());
+            Client savedClient = clientRepository.save(client1);
+            return (ClientResponse) converter.convert(savedClient, new ClientResponse());
         } else
             throw new NoSuchClientExistException("Client with this username does not exist!!");
     }
@@ -78,7 +77,7 @@ public class ClientService {
     public String deleteClient(String username) {
         Optional<Client> optionalClient = clientRepository.findByUsername((username));
         if (optionalClient.isPresent()) {
-            Client client=optionalClient.get();
+            Client client = optionalClient.get();
             clientRepository.delete(client);
             return "Client Record deleted  successfully!!";
         } else

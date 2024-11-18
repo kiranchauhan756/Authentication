@@ -101,21 +101,25 @@ public class ClientServiceTest {
         assertThrows(NoSuchClientExistException.class, () -> clientService.getClientList());
 
     }
+
     @Test
-    void test_updateExistingClient(){
+    void test_updateExistingClient() {
+
 
     }
+
     @Test
-    void test_updateNonExistingClient() throws Exception{
+    void test_updateNonExistingClient() throws Exception {
 
     }
 
     @Test
-    void test_deleteExistingClient(){
+    void test_deleteExistingClient() {
 
     }
+
     @Test
-    void test_deleteNonExistingClient() throws Exception{
+    void test_deleteNonExistingClient() throws Exception {
 
     }
 }
