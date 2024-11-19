@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
@@ -119,15 +120,14 @@ public class ClientServiceTest {
 
     @Test
     void test_updateNonExistingClient() {
-        
+
     }
 
     @Test
     void test_deleteExistingClient() {
         Client client = Client.builder().username("kiran").password("1234").build();
         when(clientRepository.findByUsername("kiran")).thenReturn(Optional.ofNullable(client));
-        ClientResponse response = clientService.deleteClient("kiran");
-        assertThat(response).isNull();
+        assertDoesNotThrow(() -> clientService.deleteClient("kiran"));
 
     }
 

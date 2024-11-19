@@ -15,7 +15,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.Collections;
 import java.util.List;
@@ -23,7 +22,7 @@ import java.util.List;
 import static authn_server.helpers.JsonHelper.asJsonString;
 import static authn_server.helpers.JsonHelper.asObject;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -116,21 +115,17 @@ public class ClientControllerTest {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     @Test
     void testDelete_whenClientExist() throws Exception{
-        when(clientService.deleteClient("kiran")).thenReturn(ClientResponse.builder().id(1L).username("kiran").password("pP@1yhnb").build());
+        doNothing().when(clientService).deleteClient("kiran");
         MvcResult mvcResult = mockMvc.perform(delete(CLIENT_REQUEST_PATH + "/delete"+"/kiran")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").exists()).andReturn();
-        String response = mvcResult.getResponse().getContentAsString();
-        ClientResponse clientResponse = asObject(response, ClientResponse.class);
-        assertThat(clientResponse.getId()).isEqualTo(1L);
-        assertThat(clientResponse.getUsername()).isEqualTo("kiran");
+                .andExpect(status().isNoContent())
+                .andReturn();
     }
 
     @Test
     void testDelete_whenClientDoNotExist() throws Exception{
-        when(clientService.deleteClient("kiran")).thenThrow(NoSuchClientExistException.class);
+        doThrow(NoSuchClientExistException.class).when(clientService).deleteClient("kiran");
         MvcResult mvcResult = mockMvc.perform(delete(CLIENT_REQUEST_PATH + "/delete"+"/kiran")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -154,10 +149,10 @@ public class ClientControllerTest {
         assertThat(clientResponse.getId()).isEqualTo(1L);
         assertThat(clientResponse.getUsername()).isEqualTo("kiranChauhan");
     }
-    //Error -----------------------------------------------
+
     @Test
     void testUpdate_whenClientExistAndRequestIsNotValid() throws Exception{
-        ClientRequest clientRequest = ClientRequest.builder().password("pP@1yhnb").build();
+        ClientRequest clientRequest = ClientRequest.builder().password("pP@1yh").build();
         MvcResult mvcResult = mockMvc.perform(put(CLIENT_REQUEST_PATH + "/update"+"/kiran").content(asJsonString(clientRequest))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))

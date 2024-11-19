@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/client")
@@ -36,12 +35,13 @@ public class ClientController {
     }
 
     @PutMapping("/update/{username}")
-    public ResponseEntity<ClientResponse> updateClient(@PathVariable("username") String username, @RequestBody ClientRequest clientRequest) {
+    public ResponseEntity<ClientResponse> updateClient(@PathVariable("username") String username, @Valid @RequestBody ClientRequest clientRequest) {
         return ResponseEntity.status(HttpStatus.OK).body(clientService.updateClient(username, clientRequest));
     }
 
     @DeleteMapping("/delete/{username}")
-    public ResponseEntity<ClientResponse> deleteClient(@PathVariable("username") String username) {
-        return ResponseEntity.status(HttpStatus.OK).body(clientService.deleteClient(username));
+    public ResponseEntity<?> deleteClient(@PathVariable("username") String username) {
+        clientService.deleteClient(username);
+        return ResponseEntity.noContent().build();
     }
 }
