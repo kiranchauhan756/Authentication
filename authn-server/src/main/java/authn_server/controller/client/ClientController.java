@@ -9,7 +9,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+/* This class is used to handle the request made by client
 
+@RestController  --> This annotation allows to handle all RestApi such as GET,PUT,POST,DELETE
+@RequestMapping --> this annotation is used at class level to express shared mappings it can be used at method level to more the mappings more specifically
+ */
 @RestController
 @RequestMapping("/client")
 public class ClientController {
@@ -22,6 +26,7 @@ public class ClientController {
     public ResponseEntity<ClientResponse> addClient(@Valid @RequestBody ClientRequest clientRequest) {
         return ResponseEntity.status(HttpStatus.CREATED).body(clientService.add(clientRequest));
     }
+
 
     @GetMapping("/allClients")
     public ResponseEntity<List<ClientResponse>> getAllClients() {

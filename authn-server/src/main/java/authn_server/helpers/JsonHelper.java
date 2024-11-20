@@ -2,6 +2,10 @@ package authn_server.helpers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/* This class is used to serialize and deserialize requests
+     Serialize -> Converting  an object into Json
+     Deserialize -> Converting Json into an object
+ */
 public class JsonHelper {
 
     public static String asJsonString(final Object obj) {

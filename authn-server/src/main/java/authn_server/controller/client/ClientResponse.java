@@ -4,7 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
+/*  This class is a DTO(Data Transfer Object) class which is mapped to Client
+     This class will store the response coming back from rest api calling  on the server
+*/
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
+/* this class is used to define table with columns and data type to store client data into the database*/
 @Entity
 @Table(name = "Client")
 @AllArgsConstructor

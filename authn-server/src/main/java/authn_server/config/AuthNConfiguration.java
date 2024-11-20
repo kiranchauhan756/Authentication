@@ -5,6 +5,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+/* this class is used by spring IOC container as a source of bean definition */
+
 @Configuration
 public class AuthNConfiguration {
 

@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/* this class is used to handle exceptions across the entire application in a global */
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
