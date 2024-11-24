@@ -1,5 +1,6 @@
 package authn_server.entity;
 
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

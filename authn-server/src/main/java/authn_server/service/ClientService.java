@@ -67,7 +67,7 @@ public class ClientService {
         if (optionalClient.isPresent()) {
             Client client1 = optionalClient.get();
             client1.setUsername(clientRequest.getUsername());
-            client1.setPassword(clientRequest.getPassword());
+            client1.setPassword(bCryptPasswordEncoder.encode(clientRequest.getPassword()));
             Client savedClient = clientRepository.save(client1);
             return (ClientResponse) converter.convert(savedClient, new ClientResponse());
         } else

@@ -105,22 +105,25 @@ public class ClientServiceTest {
 
     @Test
     void test_updateExistingClient() {
-//        ClientRequest clientRequest = ClientRequest.builder().username("kiranChauhan").password("pP@1yhnb1").build();
-//        Client client = Client.builder().id(1L).username("kiran").password("pP@1yhnb").build();
-//        ClientResponse clientResponse = ClientResponse.builder().id(1L).username("kiranChauhan").password("%$%^%^^%^^%^%$%$%$&").build();
-//        when(clientRepository.findByUsername(clientRequest.getUsername())).thenReturn(Optional.ofNullable(client));
-//        when(converter.convert(ClientRequest.class, Client.class)).thenReturn(clientRequest);
-//        when(converter.convert(Client.class, ClientResponse.class)).thenReturn(clientResponse);
-//        ClientResponse response=clientService.updateClient(clientResponse.getUsername(), clientRequest);
-//        when(clientRepository.save(client)).thenReturn(client);
-//        assertThat(response).isNotNull();
-//        assertThat(client.getUsername()).isEqualTo("kiranChauhan");
+        ClientRequest clientRequest = ClientRequest.builder().username("kirancccc").password("pP@1yhnb").build();
+        Client client = Client.builder().id(1L).username("kirancccc").password("pP@1yhnb").build();
+        when(clientRepository.findByUsername("kiran")).thenReturn(Optional.ofNullable(client));
+        ClientResponse clientResponse = ClientResponse.builder().id(1L).username("kirancccc").password("%$%^%^^%^^%^%$%$%$&").build();
+        doReturn("%$%^%^^%^^%^%$%$%$&").when(bCryptPasswordEncoder).encode(clientRequest.getPassword());
+        when(converter.convert(any(Client.class), any(ClientResponse.class))).thenReturn(clientResponse);
+        when(clientRepository.save(client)).thenReturn(client);
+        ClientResponse response=clientService.updateClient("kiran",clientRequest);
+        assertThat(response).isNotNull();
+        assertThat(response.getUsername()).isEqualTo("kirancccc");
 
     }
 
     @Test
     void test_updateNonExistingClient() {
-
+        ClientRequest clientRequest = ClientRequest.builder().username("kirancccccccccccc").password("pP@1yhnb").build();
+        Client client = Client.builder().id(1L).username("kiran").password("pP@1yhnb").build();
+        when(clientRepository.findByUsername("kiran")).thenReturn(Optional.empty());
+        assertThrows(NoSuchClientExistException.class,()->clientService.updateClient("kiran",clientRequest));
     }
 
     @Test
