@@ -8,6 +8,7 @@ import authn_server.exception.ClientAlreadyExistException;
 import authn_server.exception.NoSuchClientExistException;
 import authn_server.repository.ClientRepository;
 import authn_server.service.ClientService;
+import authn_server.tests.unit.BaseUnitTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -27,7 +28,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class ClientServiceTest {
+public class ClientServiceUnitTest extends BaseUnitTest {
 
     @InjectMocks
     private ClientService clientService;
